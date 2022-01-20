@@ -1,14 +1,15 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
 setup(
-    name='navicli',
-    version='0.0.0',
-    packages=find_packages(),
+    name='navi',
+    version='0.1.0',
+    py_modules=['nav'],
     install_requires=[
-        'click',
+        'Click',
     ],
-    entry_points='''
-        [console_scripts]
-        navi=nav:nav
-    '''
+    entry_points={
+        'console_scripts': [
+            'navi = nav:nav',
+        ],
+    },
 )
