@@ -1,0 +1,7 @@
+click==8.0.3
+distlib==0.3.4
+filelock==3.4.2
+-e git+https://github.com/hydenp/navi-cli.git@ab8971f3a589e550cc771cb3e3d403bcd5c85eca#egg=navi
+platformdirs==2.4.1
+six==1.16.0
+virtualenv==20.13.0
