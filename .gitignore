@@ -3,6 +3,9 @@ __pycache__
 navi.egg-info
 env
 
+# ignore .idea
+.idea
+
 # ignore sqlite db file and navi_aliases.zsh, it will autocreate when needed
 aliases.db
 navi_aliases.zsh

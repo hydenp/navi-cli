@@ -1,9 +1,10 @@
 import sqlite3
 
+
 class Alias_DB():
-    '''
+    """
     Class to manage sqlite3 database
-    
+
     ...
 
     Attributes
@@ -15,7 +16,7 @@ class Alias_DB():
 
     Methods
     -------
-    '''
+    """
 
     def __init__(self):
         self.conn = sqlite3.connect('aliases.db')
@@ -30,7 +31,6 @@ class Alias_DB():
 
         # create the table if it doesn't exist
         if self.cursor.fetchone()[0] != 1:
-
             print('table doesn\'t exist, creating it now!')
 
             self.cursor.execute('''
@@ -40,20 +40,19 @@ class Alias_DB():
             tag text DEFAULT NULL)
             ''')
             self.conn.commit()
-    
 
     # try to insert a certain alias
     def insert(self, alias, cwd, tag=None):
-        '''
-        Insert new alias into the table 
-        
+        """
+        Insert new alias into the table
+
         Returns
         -------
         False:
             alias already exists
         True:
             alias succesffully inserted
-        '''
+        """
         params = (alias, cwd, tag)
 
         # Try and insert new alias, catch if it's not unique
@@ -69,25 +68,24 @@ class Alias_DB():
         else:
             print('Alias succesffully added!')
             return True
-            
-    
+
     def delete(self, alias):
-        '''
+        """
         delete a given alias from the table
-        
+
         Returns
         -------
         False:
             error executing query
         True:
             alias succesffully delete
-        '''
+        """
         try:
             self.conn.execute('''
                 DELETE FROM nav_aliases 
                 WHERE alias=?
-                ''', 
-                (alias,))
+                ''',
+                              (alias,))
             self.conn.commit()
         except:
             print("error!")
@@ -96,29 +94,26 @@ class Alias_DB():
             print("alias removed succesffully!")
             return True
 
-
-
     def fetch_all(self):
-        '''
+        """
         fetch all the records from the table
-        
+
         Returns
         -------
         query_res: list of records as tuples
-        '''
+        """
         return self.conn.execute('''
             SELECT * FROM nav_aliases
             ''').fetchall()
 
-
     def search_cwd(self, cwd):
-        '''
+        """
         search for a directory in database
-        
+
         Returns
         -------
         query: list of records as tuples
-        '''
+        """
         params = (cwd,)
         return self.conn.execute('''
             SELECT * FROM nav_aliases
@@ -126,13 +121,13 @@ class Alias_DB():
             ''', params).fetchall()
 
     def search_alias(self, alias):
-        '''
+        """
         search for a alias in database
-        
+
         Returns
         -------
         query: list of records as tuples
-        '''
+        """
         params = (alias,)
         return self.conn.execute('''
             SELECT * FROM nav_aliases
@@ -156,7 +151,3 @@ if __name__ == '__main__':
 
     # pp = Printer(heads, test)
     # pp.pretty_print()
-
-
-    
-    

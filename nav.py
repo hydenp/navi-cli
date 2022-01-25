@@ -5,20 +5,22 @@ from sqlite_db import Alias_DB
 from pretty_printer import Printer
 from file_handler import FileHandler
 
+
 # create the nav group of commands
 @click.group()
 def nav() -> None:
-    '''
+    """
     Add navigation aliases
-    '''
+    """
     pass
+
 
 @nav.command()
 @click.argument('alias', type=str)
 def add(alias):
-    '''
+    """
     Add alias to navigate to current directory with alias as argument
-    '''
+    """
 
     # get the current working directory
     cwd = os.getcwd()
@@ -32,26 +34,27 @@ def add(alias):
 @nav.command()
 def update():
     pass
-    
+
+
 @nav.command()
 @click.argument('alias', type=str)
 def remove(alias):
-    '''
+    """
     Remove alias to current directory
-    '''
+    """
 
     # delete the alias from the database and then refresh the alias file
     db = Alias_DB()
     if db.delete(alias):
         cmds = db.fetch_all()
         FileHandler.refresh(cmds)
-    
+
 
 @nav.command()
 def list():
-    '''
+    """
     List all aliases
-    '''
+    """
 
     # fetch all the aliases and print them out
     headers = ['Aliases', 'Directory']
