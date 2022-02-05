@@ -1,7 +1,7 @@
 import click
 import os
 
-from sqlite_db import Alias_DB
+from alias_db import AliasDB
 from pretty_printer import Printer
 from file_handler import FileHandler
 
@@ -22,13 +22,9 @@ def add(alias):
     Add alias to navigate to current directory with alias as argument
     """
 
-    # get the current working directory
-    cwd = os.getcwd()
-
     # add the alias to the db and then write to the file
-    db = Alias_DB()
-    if db.insert(alias, cwd, None):
-        FileHandler.write_cd(alias, cwd)
+    if AliasDB.insert(alias, os.getcwd(), None):
+        FileHandler.write_cd(alias, os.getcwd())
         click.echo('Alias added successfully')
 
 
@@ -38,11 +34,11 @@ def update(alias):
     """
     If an alias exists for the current working directory, update it with the argument provided
     """
-    db = Alias_DB()
-    res = db.search_cwd(os.getcwd())
+
+    res = AliasDB.search_cwd(os.getcwd())
     if res is not None:
-        db.update(res[0], os.getcwd(), alias)
-        cmds = db.fetch_all()
+        AliasDB.update(res[0], os.getcwd(), alias)
+        cmds = AliasDB.fetch_all()
         FileHandler.refresh(cmds)
         click.echo('Alias updated, alias to cwd is {}'.format(alias))
     else:
@@ -57,18 +53,16 @@ def remove(alias):
     If alias is provided, remove the provided alias
     """
 
-    db = Alias_DB()
-
     if alias is None:
-        query_res = db.search_cwd(os.getcwd())
+        query_res = AliasDB.search_cwd(os.getcwd())
         if query_res is not None:
-            db.delete(query_res[0])
+            AliasDB.delete(query_res[0])
             click.echo('Alias removed successfully')
         else:
             click.echo('There is no alias to remove for the cwd!')
     else:
-        if db.delete(alias):
-            cmds = db.fetch_all()
+        if AliasDB.delete(alias):
+            cmds = AliasDB.fetch_all()
             FileHandler.refresh(cmds)
             click.echo('Alias {} removed successfully'.format(alias))
 
@@ -81,8 +75,7 @@ def list():
 
     # fetch all the aliases and print them out
     headers = ['Aliases', 'Directory']
-    db = Alias_DB()
-    cmds = db.fetch_all()
+    cmds = AliasDB.fetch_all()
     if len(cmds) == 0:
         click.echo('You don\'t currently have any aliases setup with navi')
     else:
@@ -94,10 +87,9 @@ def search():
     """
     Search for if there is an alias for the current working directory
     """
-    db = Alias_DB()
-    query_res = db.search_cwd(os.getcwd())
+
+    query_res = AliasDB.search_cwd(os.getcwd())
     if query_res is None:
         click.echo('No alias for the current working directory')
     else:
         click.echo('{} is the alias for the current working directory'.format(query_res[0]))
-
