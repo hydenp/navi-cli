@@ -11,13 +11,21 @@ class Printer:
     @staticmethod
     def pretty_print(headings, data):
         """Print out aliases and the directory they point to"""
-        longest_alias = max(list(map(lambda t: len(t[0]), data))) + 5
+        longest_alias = max(list(map(lambda t: len(t[0]), data)))
+
+        # manage edge case where all aliases are very short
+        if longest_alias < 7:
+            longest_alias += (7 - longest_alias)
+
+        # set the min distance between columns
+        longest_alias += 3
+
         # print the headings
         for h in headings:
-            print(h + ' '*(longest_alias-7), end='')
+            print(h + ' ' * (longest_alias - 7), end='')
         print()
-        # print('-' * len(self.headings[0]) + ' '*(self.longest_alias-7) + '-'*10)
-        
+
+        # print out all the entries
         for x in data:
             print(x[0] + ' ' * (longest_alias - len(x[0])), end='')
             print(x[1])
