@@ -1,4 +1,6 @@
 import sqlite3
+from pathlib import Path
+import os
 
 
 class Alias_DB():
@@ -19,7 +21,9 @@ class Alias_DB():
     """
 
     def __init__(self):
-        self.conn = sqlite3.connect('aliases.db')
+
+        self.file_path = '/Users/hydenpolikoff/Code/projects/navi-cli/aliases.db'
+        self.conn = sqlite3.connect(self.file_path)
         self.cursor = self.conn.cursor()
 
         # check if the table exists
@@ -51,7 +55,7 @@ class Alias_DB():
         False:
             alias already exists
         True:
-            alias succesffully inserted
+            alias successfully inserted
         """
         params = (alias, cwd, tag)
 
@@ -66,7 +70,6 @@ class Alias_DB():
             print('That alias is already in use!')
             return False
         else:
-            print('Alias succesffully added!')
             return True
 
     def delete(self, alias):
@@ -78,7 +81,7 @@ class Alias_DB():
         False:
             error executing query
         True:
-            alias succesffully delete
+            alias successfully delete
         """
         try:
             self.conn.execute('''
@@ -87,11 +90,26 @@ class Alias_DB():
                 ''',
                               (alias,))
             self.conn.commit()
-        except:
-            print("error!")
+        except e:
+            print(e)
             return False
         else:
-            print("alias removed succesffully!")
+            return True
+
+    def update(self, old_alias, new_alias, cwd):
+        params = (cwd, new_alias, old_alias)
+        try:
+            self.conn.execute('''
+                UPDATE nav_aliases 
+                SET alias = ? ,
+                    directory = ?
+                WHERE alias = ?
+                ''', params)
+            self.conn.commit()
+        except e:
+            print(e)
+            return False
+        else:
             return True
 
     def fetch_all(self):
@@ -118,11 +136,11 @@ class Alias_DB():
         return self.conn.execute('''
             SELECT * FROM nav_aliases
             WHERE directory = ?
-            ''', params).fetchall()
+            ''', params).fetchone()
 
     def search_alias(self, alias):
         """
-        search for a alias in database
+        search for an alias in database
 
         Returns
         -------
@@ -135,17 +153,17 @@ class Alias_DB():
             ''', params).fetchall()
 
 
-if __name__ == '__main__':
-    db = Alias_DB()
-    # db.insert("dev", 'test')
-    db.insert("eeee", "/Users/hydenpolikoff", 'test_tag')
-    # db.insert("yuu", "/Users/hydenpolikoff")
-    # db.search_cwd('home')
-
-    print(db.fetch_all())
-    db.delete("home")
-
-    print(db.fetch_all())
+# if __name__ == '__main__':
+#     db = Alias_DB()
+#     # db.insert("dev", 'test')
+#     db.insert("eeee", "/Users/hydenpolikoff", 'test_tag')
+#     # db.insert("yuu", "/Users/hydenpolikoff")
+#     # db.search_cwd('home')
+#
+#     print(db.fetch_all())
+#     db.delete("home")
+#
+#     print(db.fetch_all())
     # heads = ['Aliases', 'Directory']
     # test = [('home', '/Users/hydenpolikoff', 'test_tag'), ('devvv', '/Users/hydenpolikoff/Code/projects/navi-cli', None)]
 
