@@ -9,3 +9,4 @@ env
 # ignore sqlite db file and navi_aliases.zsh, it will autocreate when needed
 aliases.db
 navi_aliases.zsh
+globals.txt
