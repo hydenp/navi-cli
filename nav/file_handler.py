@@ -5,7 +5,7 @@ class FileHandler:
     """class to manage reading and writing to the alias file"""
 
     # store the name of the file
-    file_path = os.path.expanduser("~") + '/.navi-cli/aliases.zsh'
+    file_path = os.path.expanduser("~") + '/.navi-cli/aliases'
     globals_file = os.path.expanduser("~") + '/.navi-cli/navi_globals.txt'
 
     @staticmethod
