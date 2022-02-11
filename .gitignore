@@ -1,6 +1,6 @@
 # ignore temp files
 __pycache__
-navi_cli.egg-info
+navi_cli.egg-info/
 build
 env
 
