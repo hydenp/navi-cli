@@ -18,7 +18,7 @@ def refresh_session():
     if global_vars['auto_reload'] == 'true':
         if global_vars['shell'] == 'zsh':
             click.echo('refreshing session...')
-            os.system('zsh ~/.zshrc')
+            os.system('zsh $HOME/.zshrc')
         elif global_vars['shell'] == 'bash':
             click.echo('refreshing session...')
             os.system('bash ~/.bash_profile')
@@ -164,7 +164,7 @@ def config():
         click.echo('1: yes, auto-reload\n2: no, don\'t auto-reload\n3: what does this mean...')
         choice = click.prompt('>', type=int)
         if choice == 1:
-            FileHandler.update_global('auto_load', 'true')
+            FileHandler.update_global('auto_reload', 'true')
             click.echo('navi has been configured for auto-reload')
             auto_load_choice = False
         elif choice == 2:
@@ -202,3 +202,7 @@ def set(global_to_set):
             click.echo('invalid shell type, accepted inputs are:\nzsh\nbash')
     else:
         click.echo('there is no global for that in navi')
+
+
+if __name__ == '__main__':
+    nav()

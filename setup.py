@@ -1,9 +1,9 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='navi',
+    name='navi-cli',
     version='0.1.0',
-    # py_modules=['nav'],
+    py_modules=['nav'],
     packages=find_packages(),
     include_package_data=True,
     install_requires=[

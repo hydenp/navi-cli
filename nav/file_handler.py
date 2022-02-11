@@ -5,12 +5,8 @@ class FileHandler:
     """class to manage reading and writing to the alias file"""
 
     # store the name of the file
-    file_path = '/Users/hydenpolikoff/Code/projects/navi-cli/navi_aliases.zsh'
-    globals_file = '/Users/hydenpolikoff/Code/projects/navi-cli/globals.txt'
-
-    # for when hopefully installed in home directory
-    # home = os.path.expanduser("~")
-    # file_path = home + '.navi-cli/navi_aliases.zsh'
+    file_path = os.path.expanduser("~") + '/.navi-cli/aliases.zsh'
+    globals_file = os.path.expanduser("~") + '/.navi-cli/navi_globals.txt'
 
     @staticmethod
     def write_cd(alias, path):

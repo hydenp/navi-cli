@@ -6,8 +6,16 @@ class AliasDB:
     """
     Class to manage sqlite3 database
     """
-    file_path = '/Users/hydenpolikoff/Code/projects/navi-cli/aliases.db'
-    conn = sqlite3.connect(file_path)
+    # file_path = '/Users/hydenpolikoff/Code/projects/navi-cli/aliases.db'
+
+    file_path = os.path.expanduser("~") + '/.navi-cli/aliases.db'
+    try:
+        conn = sqlite3.connect(file_path)
+    except sqlite3.OperationalError:
+        os.mkdir(os.path.expanduser("~") + '/.navi-cli')
+    finally:
+        conn = sqlite3.connect(file_path)
+
     cursor = conn.cursor()
 
     @staticmethod
