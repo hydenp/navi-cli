@@ -1,6 +1,7 @@
 # ignore temp files
 __pycache__
-navi.egg-info
+navi_cli.egg-info
+build
 env
 
 # ignore .idea
