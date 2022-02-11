@@ -123,7 +123,7 @@ def search():
 @click.argument('show', default='')
 def config(show):
     """
-    configure if you're using zsh or bash and weather to auto reload the shell
+    Configure if you're using zsh or bash and weather to auto reload the shell
     """
 
     if show in ['show', 's']:
