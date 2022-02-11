@@ -1,9 +1,10 @@
 import click
 import os
+import nav
 
-from alias_db import AliasDB
-from pretty_printer import Printer
-from file_handler import FileHandler
+from nav.alias_db import AliasDB
+from nav.pretty_printer import Printer
+from nav.file_handler import FileHandler
 
 
 # create the nav group of commands
