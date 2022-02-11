@@ -196,7 +196,7 @@ def config(show):
 @click.argument('global_to_set', nargs=2)
 def set(global_to_set):
     """
-    set the shell type and auto_reload configs without using the config command
+    Set the shell type and auto_reload configs without using the config command
     """
 
     if global_to_set[0] in ['auto_reload', 'ar'] :
