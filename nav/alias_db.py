@@ -31,7 +31,7 @@ class AliasDB:
             AliasDB.cursor.execute('''
             CREATE TABLE nav_aliases 
             (alias text PRIMARY KEY,
-            directory text, 
+            directory text UNIQUE, 
             tag text DEFAULT NULL)
             ''')
             AliasDB.conn.commit()

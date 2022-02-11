@@ -36,11 +36,14 @@ def nav() -> None:
 
 
 @nav.command()
+@click.option('-t', '--tag', default=None)
 @click.argument('alias', type=str)
-def add(alias):
+def add(alias, tag):
     """
     Add alias to navigate to current directory with alias as argument
     """
+
+    click.echo(tag)
 
     # add the alias to the db and then write to the file
     if AliasDB.insert(alias, os.getcwd(), None):
@@ -51,8 +54,8 @@ def add(alias):
 
 @nav.command()
 @click.argument('alias', type=str)
-@click.option('-t', '--tag')
-def update(alias):
+@click.option('-t', '--tag', nargs=1, type=str)
+def update(alias, tag):
     """
     If an alias exists for the current working directory, update it with the argument provided
     """
@@ -122,63 +125,74 @@ def search():
 
 
 @nav.command()
-def config():
+@click.option('--show', '-s', is_flag=True, default=False)
+def config(show):
     """
     configure if you're using zsh or bash and weather to auto reload the shell
     """
 
-    # setting up shell choice
-    shell = os.getenv('SHELL')
-    shell_choice = True
-    if 'zsh' in shell:
-        FileHandler.update_global('shell', 'zsh')
-        click.echo('we detected you are running zsh. navi shell type has been configured.')
-        shell_choice = False
-    elif 'bash' in shell:
-        FileHandler.update_global('shell', 'bash')
-        click.echo('we detected you are running bash. navi shell type has been configured.')
-        shell_choice = False
+    if show:
+        gls = FileHandler.read_globals()
+        print()
+        if gls != {}:
+            for k in gls:
+                click.echo(f'{k} = {gls[k]}')
+        else:
+            click.echo('no globals currently configured')
+
     else:
-        click.echo('uh oh, not sure what type of terminal you are running')
-
-    # if shell can't be figured out automatically
-    while shell_choice:
-        click.echo('Are you using zsh or bash? Please enter 1 or 2')
-        click.echo('1: zsh\n2: bash')
-        value = click.prompt('>', type=int)
-        if value == 1:
+        # setting up shell choice
+        shell = os.getenv('SHELL')
+        shell_choice = True
+        if 'zsh' in shell:
             FileHandler.update_global('shell', 'zsh')
-            click.echo('navi has been configured for zsh.')
+            click.echo('we detected you are running zsh. navi shell type has been configured.')
             shell_choice = False
-        elif value == 2:
+        elif 'bash' in shell:
             FileHandler.update_global('shell', 'bash')
-            click.echo('navi has been configured for bash.')
+            click.echo('we detected you are running bash. navi shell type has been configured.')
             shell_choice = False
         else:
-            click.echo('please enter a valid option')
+            click.echo('uh oh, not sure what type of terminal you are running')
 
-    # setting up auto_reload choice
-    auto_load_choice = True
-    while auto_load_choice:
-        click.echo('Would you like to auto-reload your shell after add/update/remove commands?')
-        click.echo('1: yes, auto-reload\n2: no, don\'t auto-reload\n3: what does this mean...')
-        choice = click.prompt('>', type=int)
-        if choice == 1:
-            FileHandler.update_global('auto_reload', 'true')
-            click.echo('navi has been configured for auto-reload')
-            auto_load_choice = False
-        elif choice == 2:
-            FileHandler.update_global('auto_reload', 'false')
-            click.echo('navi has been configured not to auto-reload')
-            auto_load_choice = False
-        elif choice == 3:
-            click.echo('''
-            in order for your alias to work, you need to reload your terminal session.
-            if you select yes, the command will run automatically after you add/update/remove.
-            this will slow down navi but it won't be any faster to run it yourself.
-            ''')
-        else:
-            click.echo('Please enter a valid option')
+        # if shell can't be figured out automatically
+        while shell_choice:
+            click.echo('Are you using zsh or bash? Please enter 1 or 2')
+            click.echo('1: zsh\n2: bash')
+            value = click.prompt('>', type=int)
+            if value == 1:
+                FileHandler.update_global('shell', 'zsh')
+                click.echo('navi has been configured for zsh.')
+                shell_choice = False
+            elif value == 2:
+                FileHandler.update_global('shell', 'bash')
+                click.echo('navi has been configured for bash.')
+                shell_choice = False
+            else:
+                click.echo('please enter a valid option')
+
+        # setting up auto_reload choice
+        auto_load_choice = True
+        while auto_load_choice:
+            click.echo('Would you like to auto-reload your shell after add/update/remove commands?')
+            click.echo('1: yes, auto-reload\n2: no, don\'t auto-reload\n3: what does this mean...')
+            choice = click.prompt('>', type=int)
+            if choice == 1:
+                FileHandler.update_global('auto_reload', 'true')
+                click.echo('navi has been configured for auto-reload')
+                auto_load_choice = False
+            elif choice == 2:
+                FileHandler.update_global('auto_reload', 'false')
+                click.echo('navi has been configured not to auto-reload')
+                auto_load_choice = False
+            elif choice == 3:
+                click.echo('''
+                in order for your alias to work, you need to reload your terminal session.
+                if you select yes, the command will run automatically after you add/update/remove.
+                this will slow down navi but it won't be any faster to run it yourself.
+                ''')
+            else:
+                click.echo('Please enter a valid option')
 
 
 @nav.command()
