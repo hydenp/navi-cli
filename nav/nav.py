@@ -21,7 +21,7 @@ def refresh_session():
             os.system('zsh $HOME/.zshrc')
         elif global_vars['shell'] == 'bash':
             click.echo('Refreshing session...')
-            os.system('bash ~/.bash_profile')
+            os.system('bash ~/.bashrc')
         else:
             click.echo('navi is not configured to refresh your session, please do so manually!')
 
