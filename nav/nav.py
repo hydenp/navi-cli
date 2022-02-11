@@ -17,10 +17,10 @@ def refresh_session():
 
     if global_vars['auto_reload'] == 'true':
         if global_vars['shell'] == 'zsh':
-            click.echo('refreshing session...')
+            click.echo('Refreshing session...')
             os.system('zsh $HOME/.zshrc')
         elif global_vars['shell'] == 'bash':
-            click.echo('refreshing session...')
+            click.echo('Refreshing session...')
             os.system('bash ~/.bash_profile')
         else:
             click.echo('navi is not configured to refresh your session, please do so manually!')
@@ -36,14 +36,11 @@ def nav() -> None:
 
 
 @nav.command()
-@click.option('-t', '--tag', default=None)
 @click.argument('alias', type=str)
-def add(alias, tag):
+def add(alias):
     """
     Add alias to navigate to current directory with alias as argument
     """
-
-    click.echo(tag)
 
     # add the alias to the db and then write to the file
     if AliasDB.insert(alias, os.getcwd(), None):
@@ -54,8 +51,7 @@ def add(alias, tag):
 
 @nav.command()
 @click.argument('alias', type=str)
-@click.option('-t', '--tag', nargs=1, type=str)
-def update(alias, tag):
+def update(alias):
     """
     If an alias exists for the current working directory, update it with the argument provided
     """
@@ -67,7 +63,6 @@ def update(alias, tag):
         FileHandler.refresh(cmds)
         click.echo(f'Alias updated, new alias to cwd is {alias}')
         refresh_session()
-
     else:
         click.echo('No alias to update for the current directory')
 
@@ -103,12 +98,12 @@ def list():
     """
 
     # fetch all the aliases and print them out
-    headers = ['Aliases', 'Directory']
+    headers = ['Alias', 'Directory']
     cmds = AliasDB.fetch_all()
     if len(cmds) == 0:
         click.echo('No aliases currently setup with navi')
     else:
-        Printer.pretty_print(headers, cmds)
+        Printer.pretty_print(headers, cmds, True)
 
 
 @nav.command()
@@ -125,35 +120,37 @@ def search():
 
 
 @nav.command()
-@click.option('--show', '-s', is_flag=True, default=False)
+@click.argument('show', default='')
 def config(show):
     """
     configure if you're using zsh or bash and weather to auto reload the shell
     """
 
-    if show:
+    if show in ['show', 's']:
+        # showing the global vars
         gls = FileHandler.read_globals()
-        print()
         if gls != {}:
+            data = []
+            headings = ['Global', 'Value']
             for k in gls:
-                click.echo(f'{k} = {gls[k]}')
+                data.append((k, gls[k]))
+            Printer.pretty_print(headings, data)
         else:
-            click.echo('no globals currently configured')
-
+            click.echo('No globals currently configured. Run navi config or navi set <global> <value> to set them.')
     else:
         # setting up shell choice
         shell = os.getenv('SHELL')
         shell_choice = True
         if 'zsh' in shell:
             FileHandler.update_global('shell', 'zsh')
-            click.echo('we detected you are running zsh. navi shell type has been configured.')
+            click.echo('We detected you are running zsh. navi shell type has been configured.')
             shell_choice = False
         elif 'bash' in shell:
             FileHandler.update_global('shell', 'bash')
-            click.echo('we detected you are running bash. navi shell type has been configured.')
+            click.echo('We detected you are running bash. navi shell type has been configured.')
             shell_choice = False
         else:
-            click.echo('uh oh, not sure what type of terminal you are running')
+            click.echo('Uh oh, not sure what type of terminal you are running')
 
         # if shell can't be figured out automatically
         while shell_choice:
@@ -169,13 +166,13 @@ def config(show):
                 click.echo('navi has been configured for bash.')
                 shell_choice = False
             else:
-                click.echo('please enter a valid option')
+                click.echo('Please enter a valid option')
 
         # setting up auto_reload choice
         auto_load_choice = True
         while auto_load_choice:
             click.echo('Would you like to auto-reload your shell after add/update/remove commands?')
-            click.echo('1: yes, auto-reload\n2: no, don\'t auto-reload\n3: what does this mean...')
+            click.echo('1: Yes, auto-reload\n2: No, don\'t auto-reload\n3: What does this mean...')
             choice = click.prompt('>', type=int)
             if choice == 1:
                 FileHandler.update_global('auto_reload', 'true')
@@ -187,9 +184,9 @@ def config(show):
                 auto_load_choice = False
             elif choice == 3:
                 click.echo('''
-                in order for your alias to work, you need to reload your terminal session.
-                if you select yes, the command will run automatically after you add/update/remove.
-                this will slow down navi but it won't be any faster to run it yourself.
+                In order for your alias to work, you need to reload your terminal session.
+                Ff you select yes, the command will run automatically after you add/update/remove.
+                This will slow down navi but it won't be any faster to run it yourself.
                 ''')
             else:
                 click.echo('Please enter a valid option')
@@ -205,17 +202,17 @@ def set(global_to_set):
     if global_to_set[0] in ['auto_reload', 'ar'] :
         if global_to_set[1] in ['true', 'false']:
             FileHandler.update_global('auto_reload', global_to_set[1])
-            click.echo(f'global auto_reload has been set to {global_to_set[1]}')
+            click.echo(f'auto_reload has been set to {global_to_set[1]}')
         else:
-            click.echo('invalid auto_reload arg, accepted inputs are:\ntrue\nfalse')
+            click.echo('Invalid auto_reload arg, accepted inputs are:\ntrue\nfalse')
     elif global_to_set[0] == 'shell':
         if global_to_set[1] in ['bash', 'zsh']:
             FileHandler.update_global(global_to_set[0], global_to_set[1])
-            click.echo(f'global shell has been set to {global_to_set[1]}')
+            click.echo(f'shell has been set to {global_to_set[1]}')
         else:
-            click.echo('invalid shell type, accepted inputs are:\nzsh\nbash')
+            click.echo('Invalid shell type, accepted inputs are:\nzsh\nbash')
     else:
-        click.echo('there is no global for that in navi')
+        click.echo('There is no global for that in navi')
 
 
 if __name__ == '__main__':

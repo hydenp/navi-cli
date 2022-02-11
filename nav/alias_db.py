@@ -6,9 +6,10 @@ class AliasDB:
     """
     Class to manage sqlite3 database
     """
-    # file_path = '/Users/hydenpolikoff/Code/projects/navi-cli/aliases.db'
 
     file_path = os.path.expanduser("~") + '/.navi-cli/aliases.db'
+
+    # try and open a connection, if the directory doesn't exist, create it
     try:
         conn = sqlite3.connect(file_path)
     except sqlite3.OperationalError:
@@ -26,8 +27,6 @@ class AliasDB:
                     WHERE type='table' AND name='nav_aliases'
                 ''')
         if AliasDB.cursor.fetchone()[0] != 1:
-            print('table doesn\'t exist, creating it now!')
-
             AliasDB.cursor.execute('''
             CREATE TABLE nav_aliases 
             (alias text PRIMARY KEY,
@@ -59,7 +58,7 @@ class AliasDB:
                 ''', params)
             AliasDB.conn.commit()
         except sqlite3.IntegrityError:
-            print('That alias is already in use!')
+            print('That alias or directory already exists. Run navi list to see where.')
             return False
         else:
             return True
