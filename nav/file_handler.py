@@ -2,7 +2,18 @@ import os
 
 
 class FileHandler:
-    """class to manage reading and writing to the alias file"""
+    """
+    class to manage reading and writing to the alias file
+    ...
+
+    Methods
+    -------
+    write_cd()
+    clear_file()
+    refresh()
+    read_globals()
+    update_global()
+    """
 
     # store the name of the file
     file_path = os.path.expanduser("~") + '/.navi-cli/aliases'

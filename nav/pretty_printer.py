@@ -7,7 +7,10 @@ class Printer:
 
     ...
 
-    more to come here
+    Methods
+    -------
+    pretty_print(headings, data, is_dir):
+        prints out the data in a table like format with headings
 
     """
 
