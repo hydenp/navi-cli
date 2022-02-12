@@ -11,7 +11,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'navi = nav.nav:nav',
+            'navi = nav.__main__:main',
         ],
     },
 )

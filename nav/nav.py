@@ -213,7 +213,3 @@ def set(global_to_set):
             click.echo('Invalid shell type, accepted inputs are:\nzsh\nbash')
     else:
         click.echo('There is no global for that in navi')
-
-
-if __name__ == '__main__':
-    nav()
