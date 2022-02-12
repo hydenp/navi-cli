@@ -1,7 +1,9 @@
 # ignore temp files
 __pycache__
 navi_cli.egg-info/
+navi-mac.spec
 build
+dist
 env
 
 # ignore .idea
