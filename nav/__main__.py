@@ -1,3 +1,9 @@
+
+# library imports
+import click
+
+
+# module imports
 from nav import nav
 
 def main() -> None:
