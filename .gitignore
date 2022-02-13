@@ -5,6 +5,7 @@ navi-mac.spec
 build
 dist
 env
+.python-version
 
 # ignore .idea
 .idea
