@@ -25,7 +25,7 @@ def add(alias):
     # add the alias to the db and then write to the file
     if AliasDB.insert(alias, os.getcwd(), None):
         FileHandler.write_cd(alias, os.getcwd())
-        click.echo(f'Alias {alias} added successfully')
+        click.echo(f'Alias {alias} added successfully, reload your terminal session or open a new tab to make it available.')
 
 
 @nav.command()
@@ -40,7 +40,7 @@ def update(alias):
         AliasDB.update(res[0], os.getcwd(), alias)
         cmds = AliasDB.fetch_all()
         FileHandler.refresh(cmds)
-        click.echo(f'Alias updated, new alias to cwd is {alias}')
+        click.echo(f'Alias updated, new alias to cwd is {alias}, reload your terminal session or open a new tab to make it available.')
     else:
         click.echo('No alias to update for the current directory')
 
@@ -57,14 +57,20 @@ def remove(alias):
         query_res = AliasDB.search_cwd(os.getcwd())
         if query_res is not None:
             AliasDB.delete(query_res[0])
-            click.echo(f'Alias {query_res[0]} for the cwd removed successfully')
+            cmds = AliasDB.fetch_all()
+            FileHandler.refresh(cmds)
+            cmd = "echo 'unalias {}' | tr -d '\n' | pbcopy".format(query_res[0])
+            os.system(cmd)
+            click.echo(f'Alias {query_res[0]} for the cwd removed from navi successfully. The unalias command has been copied to clipboard, paste and run to finish removing.')
         else:
             click.echo('There is no alias to remove for the cwd')
     else:
-        if AliasDB.delete(alias):
+        if AliasDB.delete(alias.strip()):
             cmds = AliasDB.fetch_all()
             FileHandler.refresh(cmds)
-            click.echo(f'Alias {alias} removed successfully')
+            cmd = "echo 'unalias {}' | tr -d '\n' | pbcopy".format(alias)
+            os.system(cmd)
+            click.echo(f'Alias {alias} for the cwd removed from navi successfully. The unalias command has been copied to clipboard, paste and run to finish removing.')
 
 
 @nav.command()
@@ -93,3 +99,11 @@ def search():
         click.echo('No alias for found the current working directory')
     else:
         click.echo(f'{query_res[0]} is the alias for the current working directory')
+
+
+@nav.command()
+def refresh():
+    """Refresh the alias file from the alias db"""
+
+    cmds = AliasDB.fetch_all()
+    FileHandler.refresh(cmds)
